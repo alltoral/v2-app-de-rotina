@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Meu Dia — ALLTORAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Archivo:wght@400;500;600;700;800&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root{
+    --bg-page:#141116;
+    --bg-board:#1D1A20;
+    --bg-dot: rgba(255,255,255,0.045);
+    --yellow:#F2E205;
+    --black:#141116;
+    --white:#FFFFFF;
+    --pink:#EC1E8C;
+    --pink-note:#FF4FA8;
+    --gray-label:#9C9895;
+    --gray-line:rgba(255,255,255,0.14);
+    --mint:#2FD98A;
+    --blue:#3E8EFF;
+    --orange:#FF7A45;
+    --yellow-note:#FFC700;
+    --paper-shadow: 0 8px 18px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.3);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg-page);
+    font-family:'Archivo',sans-serif;
+    color:var(--white);
+  }
+  .app{
+    max-width:960px;
+    margin:0 auto;
+    min-height:100vh;
+    background:var(--bg-page);
+    position:relative;
+  }
+
+  /* HEADER */
+  .header{
+    background:var(--yellow);
+    padding:28px 28px 22px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:3px solid var(--black);
+  }
+  .header::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(circle, rgba(26,26,26,0.10) 1.5px, transparent 1.5px);
+    background-size: 16px 16px;
+    opacity:0.5;
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    color:var(--black);
+    opacity:0.65;
+    font-weight:700;
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    display:inline-block;
+    width:22px; height:2px;
+    background:var(--black);
+    opacity:0.7;
+  }
+  .title-row{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    flex-wrap:wrap;
+    position:relative;
+  }
+  h1{
+    font-family:'DM Serif Display',serif;
+    font-weight:700;
+    font-size:44px;
+    margin:6px 0 0;
+    color:var(--black);
+  }
+  .accent-script{
+    font-style:italic;
+    color:var(--pink);
+  }
+  .subtitle{
+    display:block;
+    font-family:'Archivo',sans-serif;
+    font-style:italic;
+    color:var(--black);
+    opacity:0.55;
+    font-size:14px;
+    margin-top:2px;
+  }
+  .date-label{
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--black);
+    opacity:0.55;
+    margin-top:10px;
+    font-weight:600;
+  }
+
+  /* TOOLBAR */
+  .toolbar{
+    display:flex;
+    gap:10px;
+    padding:16px 28px;
+    flex-wrap:wrap;
+    align-items:center;
+    background:var(--bg-page);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  button{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    border:2px solid transparent;
+    border-radius:8px;
+    padding:12px 20px;
+    cursor:pointer;
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  button:active{ transform:scale(0.95); }
+  .btn-add{ background:var(--pink); color:var(--white); }
+  .btn-add:hover{ opacity:0.9; }
+  .btn-sync{ background:transparent; color:var(--white); border:2px solid rgba(255,255,255,0.35); }
+  .btn-sync:hover{ border-color:rgba(255,255,255,0.7); }
+  .btn-sync[disabled]{ opacity:0.5; cursor:wait; }
+  .sync-status{
+    font-size:12px;
+    color:var(--gray-label);
+    font-style:italic;
+  }
+  .legend-row{
+    padding:0 28px 14px;
+    background:var(--bg-page);
+  }
+  .legend-row span{
+    font-size:12px;
+    font-style:italic;
+    color:var(--gray-label);
+  }
+  .board-code-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    padding:0 28px 16px;
+    background:var(--bg-page);
+  }
+  .board-code-label{
+    font-size:11px;
+    letter-spacing:0.5px;
+    color:var(--gray-label);
+    text-transform:uppercase;
+    font-weight:600;
+  }
+  .board-code-input{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:lowercase;
+    font-size:13px;
+    background:transparent;
+    border:2px solid rgba(255,255,255,0.25);
+    border-radius:8px;
+    color:var(--white);
+    padding:6px 10px;
+    width:120px;
+  }
+  .board-code-input:focus{ outline:none; border-color:var(--pink); }
+  .btn-code{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    background:transparent;
+    color:var(--gray-label);
+    border:2px solid rgba(255,255,255,0.2);
+    border-radius:8px;
+    padding:8px 12px;
+    cursor:pointer;
+  }
+  .btn-code:hover{ color:var(--white); border-color:rgba(255,255,255,0.5); }
+  .board-code-status{
+    font-size:11px;
+    color:var(--gray-label);
+    font-style:italic;
+  }
+  .color-picker{
+    display:flex;
+    gap:6px;
+    margin-left:4px;
+  }
+  .swatch{
+    width:22px;height:22px;border-radius:50%;
+    border:2px solid rgba(255,255,255,0.25);
+    cursor:pointer;
+    padding:0;
+  }
+  .swatch.selected{ box-shadow:0 0 0 3px var(--white); }
+
+  /* BOARD */
+  .board-wrap{
+    display:flex;
+    padding:20px 28px 60px;
+    gap:0;
+  }
+  .board{
+    background:var(--white);
+    position:relative;
+    flex:1;
+    background-image:
+      radial-gradient(circle, rgba(20,17,22,0.06) 1.4px, transparent 1.4px);
+    background-size:14px 14px;
+    border:2px solid rgba(255,255,255,0.15);
+    border-radius:14px;
+    overflow:visible;
+  }
+  .unscheduled{
+    border-bottom:2px dashed rgba(20,17,22,0.15);
+    padding:14px 14px 26px;
+    min-height:110px;
+    position:relative;
+  }
+  .unscheduled-label{
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:#8A8680;
+    font-weight:600;
+    margin-bottom:8px;
+    display:block;
+  }
+  .hours{
+    position:relative;
+  }
+  .hour-row{
+    display:flex;
+    min-height:64px;
+    border-bottom:1px solid rgba(20,17,22,0.08);
+    position:relative;
+  }
+  .hour-row.drop-hover{
+    background:rgba(255,210,63,0.25);
+  }
+  .hour-label{
+    width:64px;
+    flex-shrink:0;
+    font-size:11px;
+    color:#8A8680;
+    font-weight:600;
+    letter-spacing:0.5px;
+    padding:6px 8px 0 14px;
+    border-right:1px dashed rgba(20,17,22,0.12);
+  }
+  .hour-lane{
+    flex:1;
+    position:relative;
+    padding:6px 10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-content:flex-start;
+  }
+  .now-line{
+    position:absolute;
+    left:64px; right:0;
+    height:2px;
+    background:var(--pink);
+    z-index:5;
+  }
+  .now-line::before{
+    content:"agora";
+    position:absolute; left:-4px; top:-9px;
+    background:var(--pink);
+    color:white;
+    font-size:9px;
+    font-weight:700;
+    padding:2px 6px;
+    border-radius:6px;
+    letter-spacing:0.5px;
+  }
+
+  /* POST-ITS */
+  .note{
+    width:140px;
+    min-height:90px;
+    padding:14px 12px 10px;
+    font-family:'Kalam',cursive;
+    font-weight:700;
+    font-size:19px;
+    line-height:1.25;
+    color:var(--black);
+    box-shadow:var(--paper-shadow);
+    border-radius:3px;
+    cursor:grab;
+    position:relative;
+    user-select:none;
+    transition:box-shadow .15s ease;
+  }
+  .note:active{ cursor:grabbing; box-shadow:0 12px 22px rgba(0,0,0,0.55); z-index:20; }
+  .note::before{
+    content:"";
+    position:absolute;
+    top:-8px; left:50%; transform:translateX(-50%);
+    width:14px; height:14px;
+    border-radius:50%;
+    background:var(--black);
+    box-shadow:0 1px 3px rgba(0,0,0,0.4) inset, 0 2px 3px rgba(0,0,0,0.3);
+  }
+  .note .txt{ outline:none; word-break:break-word; }
+  .note .close{
+    position:absolute; top:2px; right:6px;
+    font-family:'Archivo',sans-serif;
+    font-size:13px; font-weight:700;
+    color:rgba(20,17,22,0.4);
+    cursor:pointer;
+    display:none;
+  }
+  .note:hover .close{ display:block; }
+  .note.dragging{ box-shadow:0 16px 28px rgba(0,0,0,0.5); }
+
+  .note.c-yellow{ background:var(--yellow-note); }
+  .note.c-pink{ background:var(--pink-note); }
+  .note.c-mint{ background:var(--mint); }
+  .note.c-blue{ background:var(--blue); }
+  .note.c-orange{ background:var(--orange); }
+
+  /* EVENT CHIP (google calendar) */
+  .event-chip{
+    background:#F7F5F0;
+    border:2px solid rgba(20,17,22,0.7);
+    border-left:6px solid var(--yellow);
+    border-radius:8px;
+    padding:8px 10px;
+    font-size:12px;
+    font-weight:500;
+    color:var(--black);
+    min-width:120px;
+    max-width:180px;
+  }
+  .event-chip .ev-time{
+    display:block;
+    font-size:10px;
+    color:#8A8680;
+    letter-spacing:0.5px;
+    font-weight:600;
+    text-transform:uppercase;
+    margin-bottom:2px;
+  }
+
+  ::-webkit-scrollbar{ width:8px; }
+  ::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.2); border-radius:4px; }
+
+  @media (max-width:600px){
+    h1{ font-size:30px; }
+    .hour-label{ width:48px; font-size:9px; padding-left:8px; }
+    .note{ width:110px; font-size:16px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <span class="eyebrow">ALLTORAL · organização diária</span>
+    <div class="title-row">
+      <h1>Meu <span class="accent-script">Dia</span></h1>
+    </div>
+    <span class="subtitle">tudo colado, nada esquecido.</span>
+    <div class="date-label" id="dateLabel"></div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-add" id="addBtn">+ novo post-it</button>
+    <div class="color-picker" id="colorPicker"></div>
+    <button class="btn-sync" id="syncBtn">sincronizar com Google Agenda</button>
+    <span class="sync-status" id="syncStatus"></span>
+  </div>
+
+  <div class="board-code-row">
+    <span class="board-code-label">código do seu quadro:</span>
+    <input class="board-code-input" id="boardCodeInput" maxlength="12" spellcheck="false" autocomplete="off">
+    <button class="btn-code" id="useCodeBtn">usar em outro aparelho</button>
+    <span class="board-code-status" id="boardCodeStatus"></span>
+  </div>
+  <div class="legend-row">
+    <span id="colorLegend"></span>
+  </div>
+
+  <div class="board-wrap">
+    <div class="board">
+      <div class="unscheduled">
+        <span class="unscheduled-label">sem horário ainda — arraste para um horário</span>
+        <div class="hour-lane" id="unscheduledLane" data-hour="none"></div>
+      </div>
+      <div class="hours" id="hoursContainer"></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+// ====== COLE AQUI A CONFIGURAÇÃO DO SEU PROJETO FIREBASE ======
+// Veja o LEIA-ME.md para o passo a passo (gratuito, sem cartão de crédito).
+const firebaseConfig = {
+  apiKey: "AIzaSyD7mMloHeHaEbkey32blc1S_aMPkVbneIE",
+  authDomain: "meudia-alltoral.firebaseapp.com",
+  projectId: "meudia-alltoral",
+  storageBucket: "meudia-alltoral.firebasestorage.app",
+  messagingSenderId: "123897237690",
+  appId: "1:123897237690:web:e1e76db43e4f9a6d1db283"
+};
+// ================================================================
+
+// ====== COLE AQUI O CLIENT ID DO GOOGLE CLOUD (para sincronizar a Agenda) ======
+// Veja o LEIA-ME.md, seção "Google Agenda", para o passo a passo.
+const GOOGLE_CLIENT_ID = "123897237690-597ledi4udri7f5oucjts1sa3hmhb118.apps.googleusercontent.com";
+// ================================================================
+
+let db = null;
+try {
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('COLE_') !== 0) {
+    const app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+  }
+} catch (err) {
+  console.warn('Firebase não inicializou:', err);
+}
+
+(function(){
+  const HOURS = [];
+  for(let h=7; h<=22; h++) HOURS.push(h);
+
+  const colors = ['yellow','pink','mint','blue','orange'];
+  const categories = {
+    yellow: 'coisas que eu tenho que fazer para mim',
+    pink: 'coisas para o ALL TORAL',
+    mint: 'coisas para fazer na rua',
+    blue: 'eventos',
+    orange: 'coisas para fazer no apartamento'
+  };
+  let selectedColor = 'yellow';
+  let notes = [];
+  let events = [];
+  const todayKey = new Date().toISOString().slice(0,10);
+  function storageKey(){ return 'notes:' + boardCode + ':' + todayKey; }
+
+  function randomCode(){
+    return Math.random().toString(36).slice(2, 8);
+  }
+  let boardCode = localStorage.getItem('meuDiaBoardCode');
+  if(!boardCode){
+    boardCode = randomCode();
+    try{ localStorage.setItem('meuDiaBoardCode', boardCode); }catch(err){}
+  }
+
+  const hoursContainer = document.getElementById('hoursContainer');
+  const unscheduledLane = document.getElementById('unscheduledLane');
+  const colorPicker = document.getElementById('colorPicker');
+  const dateLabel = document.getElementById('dateLabel');
+  const syncBtn = document.getElementById('syncBtn');
+  const syncStatus = document.getElementById('syncStatus');
+  const colorLegend = document.getElementById('colorLegend');
+  const boardCodeInput = document.getElementById('boardCodeInput');
+  const useCodeBtn = document.getElementById('useCodeBtn');
+  const boardCodeStatus = document.getElementById('boardCodeStatus');
+
+  boardCodeInput.value = boardCode;
+  useCodeBtn.addEventListener('click', ()=>{
+    const val = boardCodeInput.value.trim().toLowerCase();
+    if(!/^[a-z0-9]{4,12}$/.test(val)){
+      boardCodeStatus.textContent = 'use de 4 a 12 letras/números';
+      return;
+    }
+    boardCode = val;
+    try{ localStorage.setItem('meuDiaBoardCode', boardCode); }catch(err){}
+    boardCodeStatus.textContent = 'carregando quadro "' + boardCode + '"...';
+    load();
+  });
+
+  dateLabel.textContent = new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
+
+  function updateLegend(){
+    colorLegend.textContent = categories[selectedColor];
+  }
+
+  colors.forEach(c=>{
+    const b = document.createElement('button');
+    b.className = 'swatch c-' + c + (c===selectedColor ? ' selected':'');
+    b.title = categories[c];
+    b.style.background = getComputedStyle(document.documentElement).getPropertyValue(
+      c==='yellow' ? '--yellow-note' : c==='pink' ? '--pink-note' : '--'+c
+    );
+    b.addEventListener('click', ()=>{
+      selectedColor = c;
+      [...colorPicker.children].forEach(ch=>ch.classList.remove('selected'));
+      b.classList.add('selected');
+      updateLegend();
+    });
+    colorPicker.appendChild(b);
+  });
+  updateLegend();
+
+  function buildBoard(){
+    hoursContainer.innerHTML = '';
+    HOURS.forEach(h=>{
+      const row = document.createElement('div');
+      row.className = 'hour-row';
+      row.dataset.hour = h;
+
+      const label = document.createElement('div');
+      label.className = 'hour-label';
+      label.textContent = (h<10?'0':'')+h+':00';
+      row.appendChild(label);
+
+      const lane = document.createElement('div');
+      lane.className = 'hour-lane';
+      lane.dataset.hour = h;
+      row.appendChild(lane);
+
+      hoursContainer.appendChild(row);
+    });
+
+    const now = new Date();
+    const curH = now.getHours() + now.getMinutes()/60;
+    if(curH >= HOURS[0] && curH <= HOURS[HOURS.length-1]+1){
+      const line = document.createElement('div');
+      line.className = 'now-line';
+      const rowHeight = 64;
+      const offset = (curH - HOURS[0]) * rowHeight;
+      line.style.top = offset + 'px';
+      hoursContainer.style.position='relative';
+      hoursContainer.appendChild(line);
+    }
+  }
+
+  function assignHour(id, hour){
+    const n = notes.find(n=>n.id===id);
+    if(n){ n.hour = hour; render(); save(); }
+  }
+
+  function clearHoverHighlight(){
+    document.querySelectorAll('.hour-row.drop-hover').forEach(r=> r.classList.remove('drop-hover'));
+  }
+
+  function laneUnderPoint(x, y, draggedEl){
+    draggedEl.style.pointerEvents = 'none';
+    const target = document.elementFromPoint(x, y);
+    draggedEl.style.pointerEvents = '';
+    return target ? target.closest('.hour-lane') : null;
+  }
+
+  function makeNoteEl(note){
+    const el = document.createElement('div');
+    el.className = 'note c-' + note.color;
+    el.style.transform = 'rotate(' + note.rot + 'deg)';
+    el.dataset.id = note.id;
+    el.style.touchAction = 'none';
+
+    const close = document.createElement('span');
+    close.className = 'close';
+    close.textContent = '×';
+    close.addEventListener('click', (e)=>{ e.stopPropagation(); notes = notes.filter(n=>n.id!==note.id); render(); save(); });
+    el.appendChild(close);
+
+    const txt = document.createElement('div');
+    txt.className = 'txt';
+    txt.contentEditable = 'true';
+    txt.textContent = note.text;
+    txt.addEventListener('blur', ()=>{ note.text = txt.textContent; save(); });
+    el.appendChild(txt);
+
+    let dragging = false;
+    let pending = false;
+    let pointerId = null;
+    let startX = 0, startY = 0;
+    let offsetX = 0, offsetY = 0;
+    const DRAG_THRESHOLD = 6;
+
+    el.addEventListener('pointerdown', (e)=>{
+      pending = true;
+      dragging = false;
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      const rect = el.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      // no preventDefault here yet, so a plain tap can still focus the text to edit it
+    });
+
+    el.addEventListener('pointermove', (e)=>{
+      if(!pending) return;
+      if(!dragging){
+        if(Math.abs(e.clientX - startX) < DRAG_THRESHOLD && Math.abs(e.clientY - startY) < DRAG_THRESHOLD) return;
+        // movement passed the threshold: this is a drag, not a tap-to-edit
+        dragging = true;
+        if(document.activeElement === txt) txt.blur();
+        try{ el.setPointerCapture(pointerId); }catch(err){}
+        const rect = el.getBoundingClientRect();
+        el.style.position = 'fixed';
+        el.style.left = rect.left + 'px';
+        el.style.top = rect.top + 'px';
+        el.style.width = rect.width + 'px';
+        el.style.zIndex = 1000;
+        el.classList.add('dragging');
+      }
+      e.preventDefault();
+      el.style.left = (e.clientX - offsetX) + 'px';
+      el.style.top = (e.clientY - offsetY) + 'px';
+      clearHoverHighlight();
+      const lane = laneUnderPoint(e.clientX, e.clientY, el);
+      if(lane){
+        const row = lane.closest('.hour-row');
+        if(row) row.classList.add('drop-hover');
+      }
+    });
+
+    function endDrag(e){
+      pending = false;
+      if(!dragging) return;
+      dragging = false;
+      clearHoverHighlight();
+      const lane = laneUnderPoint(e.clientX, e.clientY, el);
+      el.style.position = ''; el.style.left = ''; el.style.top = '';
+      el.style.width = ''; el.style.zIndex = '';
+      el.classList.remove('dragging');
+      if(lane){
+        const hourAttr = lane.dataset.hour;
+        const hour = hourAttr === 'none' ? null : parseInt(hourAttr, 10);
+        assignHour(note.id, hour);
+      }
+    }
+
+    el.addEventListener('pointerup', endDrag);
+    el.addEventListener('pointercancel', endDrag);
+
+    return el;
+  }
+
+  function makeEventEl(ev){
+    const el = document.createElement('div');
+    el.className = 'event-chip';
+    const t = document.createElement('span');
+    t.className = 'ev-time';
+    t.textContent = ev.time || '';
+    el.appendChild(t);
+    el.appendChild(document.createTextNode(ev.title));
+    return el;
+  }
+
+  function render(){
+    buildBoard();
+    unscheduledLane.querySelectorAll('.note').forEach(n=>n.remove());
+    notes.filter(n=>n.hour===null).forEach(n=> unscheduledLane.appendChild(makeNoteEl(n)));
+    notes.filter(n=>n.hour!==null).forEach(n=>{
+      const lane = hoursContainer.querySelector('.hour-lane[data-hour="'+n.hour+'"]');
+      if(lane) lane.appendChild(makeNoteEl(n));
+    });
+    events.forEach(ev=>{
+      const lane = hoursContainer.querySelector('.hour-lane[data-hour="'+ev.hour+'"]');
+      if(lane) lane.appendChild(makeEventEl(ev));
+    });
+  }
+
+  document.getElementById('addBtn').addEventListener('click', ()=>{
+    notes.push({
+      id: 'n' + Date.now() + Math.random().toString(36).slice(2,6),
+      text: categories[selectedColor],
+      color: selectedColor,
+      hour: null,
+      rot: (Math.random()*8-4).toFixed(1)
+    });
+    render();
+    save();
+  });
+
+  let unsubscribe = null;
+  function subscribeBoard(){
+    if(!db) return;
+    if(unsubscribe){ unsubscribe(); unsubscribe = null; }
+    const ref = doc(db, 'boards', boardCode + '_' + todayKey);
+    unsubscribe = onSnapshot(ref, (snap)=>{
+      if(snap.exists()){
+        const data = snap.data();
+        if(Array.isArray(data.notes)){ notes = data.notes; render(); }
+      }
+      boardCodeStatus.textContent = 'conectado à nuvem ✓';
+    }, (err)=>{
+      console.warn('Firestore erro', err);
+      boardCodeStatus.textContent = 'sem conexão com a nuvem, salvo só neste aparelho';
+    });
+  }
+
+  let saveTimer = null;
+  function save(){
+    const payload = JSON.stringify(notes);
+    // instant local backup so nothing is lost even if the network call fails
+    try{ localStorage.setItem(storageKey(), payload); }catch(err){}
+    if(window.storage && typeof window.storage.set === 'function'){
+      window.storage.set(storageKey(), payload).catch(()=>{});
+    }
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(pushToCloud, 300);
+  }
+
+  async function pushToCloud(){
+    if(!db){
+      boardCodeStatus.textContent = 'modo local apenas (configure o Firebase — veja o LEIA-ME.md)';
+      return;
+    }
+    try{
+      const ref = doc(db, 'boards', boardCode + '_' + todayKey);
+      await setDoc(ref, { notes, updatedAt: Date.now() });
+    }catch(err){
+      console.warn('erro ao salvar na nuvem', err);
+      boardCodeStatus.textContent = 'sem conexão com a nuvem, salvo só neste aparelho';
+    }
+  }
+
+  async function load(){
+    if(db){
+      subscribeBoard();
+      return;
+    }
+    let raw = null;
+    if(window.storage && typeof window.storage.get === 'function'){
+      try{
+        const res = await window.storage.get(storageKey());
+        if(res && res.value) raw = res.value;
+      }catch(err){}
+    }
+    if(raw === null){
+      try{ raw = localStorage.getItem(storageKey()); }catch(err){}
+    }
+    if(raw){
+      try{ notes = JSON.parse(raw); }catch(err){}
+    }
+    boardCodeStatus.textContent = 'modo local apenas (configure o Firebase — veja o LEIA-ME.md)';
+    render();
+  }
+
+  let googleAccessToken = null;
+
+  function getGoogleAccessToken(forceConsent){
+    return new Promise((resolve, reject)=>{
+      if(GOOGLE_CLIENT_ID.indexOf('COLE_') === 0){
+        reject(new Error('missing-client-id'));
+        return;
+      }
+      if(typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2){
+        reject(new Error('gis-not-loaded'));
+        return;
+      }
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: 'https://www.googleapis.com/auth/calendar.readonly',
+        callback: (resp)=>{
+          if(resp.error){ reject(new Error(resp.error)); return; }
+          googleAccessToken = resp.access_token;
+          resolve(googleAccessToken);
+        }
+      });
+      client.requestAccessToken({ prompt: forceConsent ? 'consent' : '' });
+    });
+  }
+
+  function pad2(n){ return n.toString().padStart(2,'0'); }
+
+  syncBtn.addEventListener('click', async ()=>{
+    syncBtn.disabled = true;
+    syncStatus.textContent = 'conectando com sua conta Google...';
+    try{
+      const token = await getGoogleAccessToken(!googleAccessToken);
+      syncStatus.textContent = 'buscando eventos de hoje...';
+
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
+      const url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+        + '?timeMin=' + encodeURIComponent(startOfDay)
+        + '&timeMax=' + encodeURIComponent(endOfDay)
+        + '&singleEvents=true&orderBy=startTime';
+
+      let res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+      if(res.status === 401){
+        // token expired/invalid: force a fresh consent and retry once
+        const fresh = await getGoogleAccessToken(true);
+        res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + fresh } });
+      }
+      if(!res.ok) throw new Error('http-' + res.status);
+
+      const data = await res.json();
+      events = (data.items || []).map(item=>{
+        const startStr = item.start && (item.start.dateTime || item.start.date);
+        const endStr = item.end && (item.end.dateTime || item.end.date);
+        if(!startStr || !item.start.dateTime) return null; // skip all-day events, no clear hour slot
+        const start = new Date(startStr);
+        const end = endStr ? new Date(endStr) : null;
+        return {
+          title: item.summary || '(sem título)',
+          hour: start.getHours(),
+          time: pad2(start.getHours()) + ':' + pad2(start.getMinutes())
+            + (end ? '–' + pad2(end.getHours()) + ':' + pad2(end.getMinutes()) : '')
+        };
+      }).filter(e=> e && e.hour >= HOURS[0] && e.hour <= HOURS[HOURS.length-1]);
+
+      syncStatus.textContent = events.length ? events.length + ' evento(s) da sua agenda carregados' : 'nenhum evento hoje 🎉';
+      render();
+    }catch(err){
+      console.error(err);
+      if(err.message === 'missing-client-id'){
+        syncStatus.textContent = 'configure o Google Client ID (veja o LEIA-ME.md)';
+      }else if(err.message === 'gis-not-loaded'){
+        syncStatus.textContent = 'não consegui carregar o login do Google, tente recarregar a página';
+      }else{
+        syncStatus.textContent = 'não consegui conectar à agenda agora';
+      }
+    }finally{
+      syncBtn.disabled = false;
+    }
+  });
+
+  load();
+})();
+</script>
+</body>
+</html>
