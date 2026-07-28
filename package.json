@@ -1,0 +1,9 @@
+{
+  "name": "meu-dia-alltoral",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App de post-its diários com sincronização entre dispositivos via Netlify Blobs",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
