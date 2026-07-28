@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Meu Dia — ALLTORAL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Archivo:wght@400;500;600;700;800&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root{
@@ -15,13 +15,8 @@
     --black:#141116;
     --white:#FFFFFF;
     --pink:#EC1E8C;
-    --pink-note:#FF4FA8;
     --gray-label:#9C9895;
     --gray-line:rgba(255,255,255,0.14);
-    --mint:#2FD98A;
-    --blue:#3E8EFF;
-    --orange:#FF7A45;
-    --yellow-note:#FFC700;
     --paper-shadow: 0 8px 18px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.3);
   }
   *{box-sizing:border-box;}
@@ -144,63 +139,6 @@
     color:var(--gray-label);
     font-style:italic;
   }
-  .legend-row{
-    padding:0 28px 14px;
-    background:var(--bg-page);
-  }
-  .legend-row span{
-    font-size:12px;
-    font-style:italic;
-    color:var(--gray-label);
-  }
-  .board-code-row{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-wrap:wrap;
-    padding:0 28px 16px;
-    background:var(--bg-page);
-  }
-  .board-code-label{
-    font-size:11px;
-    letter-spacing:0.5px;
-    color:var(--gray-label);
-    text-transform:uppercase;
-    font-weight:600;
-  }
-  .board-code-input{
-    font-family:'Archivo',sans-serif;
-    font-weight:700;
-    letter-spacing:1px;
-    text-transform:lowercase;
-    font-size:13px;
-    background:transparent;
-    border:2px solid rgba(255,255,255,0.25);
-    border-radius:8px;
-    color:var(--white);
-    padding:6px 10px;
-    width:120px;
-  }
-  .board-code-input:focus{ outline:none; border-color:var(--pink); }
-  .btn-code{
-    font-family:'Archivo',sans-serif;
-    font-weight:700;
-    font-size:11px;
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    background:transparent;
-    color:var(--gray-label);
-    border:2px solid rgba(255,255,255,0.2);
-    border-radius:8px;
-    padding:8px 12px;
-    cursor:pointer;
-  }
-  .btn-code:hover{ color:var(--white); border-color:rgba(255,255,255,0.5); }
-  .board-code-status{
-    font-size:11px;
-    color:var(--gray-label);
-    font-style:italic;
-  }
   .color-picker{
     display:flex;
     gap:6px;
@@ -208,11 +146,11 @@
   }
   .swatch{
     width:22px;height:22px;border-radius:50%;
-    border:2px solid rgba(255,255,255,0.25);
+    border:2px solid rgba(255,255,255,0.4);
     cursor:pointer;
     padding:0;
   }
-  .swatch.selected{ box-shadow:0 0 0 3px var(--white); }
+  .swatch.selected{ box-shadow:0 0 0 3px var(--pink); }
 
   /* BOARD */
   .board-wrap{
@@ -301,10 +239,10 @@
     width:140px;
     min-height:90px;
     padding:14px 12px 10px;
-    font-family:'Kalam',cursive;
-    font-weight:700;
-    font-size:19px;
-    line-height:1.25;
+    font-family:'Archivo',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    line-height:1.35;
     color:var(--black);
     box-shadow:var(--paper-shadow);
     border-radius:3px;
@@ -320,7 +258,7 @@
     top:-8px; left:50%; transform:translateX(-50%);
     width:14px; height:14px;
     border-radius:50%;
-    background:var(--black);
+    background:var(--pink);
     box-shadow:0 1px 3px rgba(0,0,0,0.4) inset, 0 2px 3px rgba(0,0,0,0.3);
   }
   .note .txt{ outline:none; word-break:break-word; }
@@ -328,18 +266,16 @@
     position:absolute; top:2px; right:6px;
     font-family:'Archivo',sans-serif;
     font-size:13px; font-weight:700;
-    color:rgba(20,17,22,0.4);
     cursor:pointer;
     display:none;
   }
   .note:hover .close{ display:block; }
   .note.dragging{ box-shadow:0 16px 28px rgba(0,0,0,0.5); }
 
-  .note.c-yellow{ background:var(--yellow-note); }
-  .note.c-pink{ background:var(--pink-note); }
-  .note.c-mint{ background:var(--mint); }
-  .note.c-blue{ background:var(--blue); }
-  .note.c-orange{ background:var(--orange); }
+  .note.c-white{ background:var(--white); color:var(--black); }
+  .note.c-white .close{ color:rgba(20,17,22,0.4); }
+  .note.c-black{ background:var(--black); color:var(--white); border:1px solid rgba(255,255,255,0.12); }
+  .note.c-black .close{ color:rgba(255,255,255,0.5); }
 
   /* EVENT CHIP (google calendar) */
   .event-chip{
@@ -393,16 +329,6 @@
     <span class="sync-status" id="syncStatus"></span>
   </div>
 
-  <div class="board-code-row">
-    <span class="board-code-label">código do seu quadro:</span>
-    <input class="board-code-input" id="boardCodeInput" maxlength="12" spellcheck="false" autocomplete="off">
-    <button class="btn-code" id="useCodeBtn">usar em outro aparelho</button>
-    <span class="board-code-status" id="boardCodeStatus"></span>
-  </div>
-  <div class="legend-row">
-    <span id="colorLegend"></span>
-  </div>
-
   <div class="board-wrap">
     <div class="board">
       <div class="unscheduled">
@@ -450,15 +376,8 @@ try {
   const HOURS = [];
   for(let h=7; h<=22; h++) HOURS.push(h);
 
-  const colors = ['yellow','pink','mint','blue','orange'];
-  const categories = {
-    yellow: 'coisas que eu tenho que fazer para mim',
-    pink: 'coisas para o ALL TORAL',
-    mint: 'coisas para fazer na rua',
-    blue: 'eventos',
-    orange: 'coisas para fazer no apartamento'
-  };
-  let selectedColor = 'yellow';
+  const colors = ['white','black'];
+  let selectedColor = 'white';
   let notes = [];
   let events = [];
   const todayKey = new Date().toISOString().slice(0,10);
@@ -479,46 +398,20 @@ try {
   const dateLabel = document.getElementById('dateLabel');
   const syncBtn = document.getElementById('syncBtn');
   const syncStatus = document.getElementById('syncStatus');
-  const colorLegend = document.getElementById('colorLegend');
-  const boardCodeInput = document.getElementById('boardCodeInput');
-  const useCodeBtn = document.getElementById('useCodeBtn');
-  const boardCodeStatus = document.getElementById('boardCodeStatus');
-
-  boardCodeInput.value = boardCode;
-  useCodeBtn.addEventListener('click', ()=>{
-    const val = boardCodeInput.value.trim().toLowerCase();
-    if(!/^[a-z0-9]{4,12}$/.test(val)){
-      boardCodeStatus.textContent = 'use de 4 a 12 letras/números';
-      return;
-    }
-    boardCode = val;
-    try{ localStorage.setItem('meuDiaBoardCode', boardCode); }catch(err){}
-    boardCodeStatus.textContent = 'carregando quadro "' + boardCode + '"...';
-    load();
-  });
 
   dateLabel.textContent = new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
-
-  function updateLegend(){
-    colorLegend.textContent = categories[selectedColor];
-  }
 
   colors.forEach(c=>{
     const b = document.createElement('button');
     b.className = 'swatch c-' + c + (c===selectedColor ? ' selected':'');
-    b.title = categories[c];
-    b.style.background = getComputedStyle(document.documentElement).getPropertyValue(
-      c==='yellow' ? '--yellow-note' : c==='pink' ? '--pink-note' : '--'+c
-    );
+    b.style.background = c === 'white' ? '#FFFFFF' : '#141116';
     b.addEventListener('click', ()=>{
       selectedColor = c;
       [...colorPicker.children].forEach(ch=>ch.classList.remove('selected'));
       b.classList.add('selected');
-      updateLegend();
     });
     colorPicker.appendChild(b);
   });
-  updateLegend();
 
   function buildBoard(){
     hoursContainer.innerHTML = '';
@@ -605,12 +498,14 @@ try {
       const rect = el.getBoundingClientRect();
       offsetX = e.clientX - rect.left;
       offsetY = e.clientY - rect.top;
+      // no preventDefault here yet, so a plain tap can still focus the text to edit it
     });
 
     el.addEventListener('pointermove', (e)=>{
       if(!pending) return;
       if(!dragging){
         if(Math.abs(e.clientX - startX) < DRAG_THRESHOLD && Math.abs(e.clientY - startY) < DRAG_THRESHOLD) return;
+        // movement passed the threshold: this is a drag, not a tap-to-edit
         dragging = true;
         if(document.activeElement === txt) txt.blur();
         try{ el.setPointerCapture(pointerId); }catch(err){}
@@ -683,7 +578,7 @@ try {
   document.getElementById('addBtn').addEventListener('click', ()=>{
     notes.push({
       id: 'n' + Date.now() + Math.random().toString(36).slice(2,6),
-      text: categories[selectedColor],
+      text: 'nova tarefa',
       color: selectedColor,
       hour: null,
       rot: (Math.random()*8-4).toFixed(1)
@@ -702,16 +597,15 @@ try {
         const data = snap.data();
         if(Array.isArray(data.notes)){ notes = data.notes; render(); }
       }
-      boardCodeStatus.textContent = 'conectado à nuvem ✓';
     }, (err)=>{
       console.warn('Firestore erro', err);
-      boardCodeStatus.textContent = 'sem conexão com a nuvem, salvo só neste aparelho';
     });
   }
 
   let saveTimer = null;
   function save(){
     const payload = JSON.stringify(notes);
+    // instant local backup so nothing is lost even if the network call fails
     try{ localStorage.setItem(storageKey(), payload); }catch(err){}
     if(window.storage && typeof window.storage.set === 'function'){
       window.storage.set(storageKey(), payload).catch(()=>{});
@@ -721,16 +615,12 @@ try {
   }
 
   async function pushToCloud(){
-    if(!db){
-      boardCodeStatus.textContent = 'modo local apenas (configure o Firebase — veja o LEIA-ME.md)';
-      return;
-    }
+    if(!db) return;
     try{
       const ref = doc(db, 'boards', boardCode + '_' + todayKey);
       await setDoc(ref, { notes, updatedAt: Date.now() });
     }catch(err){
       console.warn('erro ao salvar na nuvem', err);
-      boardCodeStatus.textContent = 'sem conexão com a nuvem, salvo só neste aparelho';
     }
   }
 
@@ -752,7 +642,6 @@ try {
     if(raw){
       try{ notes = JSON.parse(raw); }catch(err){}
     }
-    boardCodeStatus.textContent = 'modo local apenas (configure o Firebase — veja o LEIA-ME.md)';
     render();
   }
 
@@ -800,6 +689,7 @@ try {
 
       let res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
       if(res.status === 401){
+        // token expired/invalid: force a fresh consent and retry once
         const fresh = await getGoogleAccessToken(true);
         res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + fresh } });
       }
@@ -809,7 +699,7 @@ try {
       events = (data.items || []).map(item=>{
         const startStr = item.start && (item.start.dateTime || item.start.date);
         const endStr = item.end && (item.end.dateTime || item.end.date);
-        if(!startStr || !item.start.dateTime) return null;
+        if(!startStr || !item.start.dateTime) return null; // skip all-day events, no clear hour slot
         const start = new Date(startStr);
         const end = endStr ? new Date(endStr) : null;
         return {
