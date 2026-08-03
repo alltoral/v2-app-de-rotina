@@ -52,10 +52,17 @@
   /* HEADER */
   .header{
     background:var(--yellow);
-    padding:28px 28px 22px;
+    width:100vw;
+    margin-left:calc(50% - 50vw);
     position:relative;
     overflow:hidden;
     border-bottom:3px solid var(--black);
+  }
+  .header-inner{
+    max-width:960px;
+    margin:0 auto;
+    padding:28px 28px 22px;
+    position:relative;
   }
   .header::after{
     content:"";
@@ -321,7 +328,7 @@
   ::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.2); border-radius:4px; }
 
   @media (max-width:600px){
-    .header{ padding:calc(16px + env(safe-area-inset-top)) 18px 16px; }
+    .header-inner{ padding:calc(16px + env(safe-area-inset-top)) 18px 16px; }
     .eyebrow{ font-size:9px; gap:6px; }
     .eyebrow::before{ width:14px; }
     h1{ font-size:28px; margin-top:4px; }
@@ -362,12 +369,14 @@
 <div class="app">
 
   <div class="header">
-    <span class="eyebrow">ALLTORAL · organização diária</span>
-    <div class="title-row">
-      <h1>Meu <span class="accent-script">Dia</span></h1>
+    <div class="header-inner">
+      <span class="eyebrow">ALLTORAL · organização diária</span>
+      <div class="title-row">
+        <h1>Meu <span class="accent-script">Dia</span></h1>
+      </div>
+      <span class="subtitle">tudo colado, nada esquecido.</span>
+      <div class="date-label" id="dateLabel"></div>
     </div>
-    <span class="subtitle">tudo colado, nada esquecido.</span>
-    <div class="date-label" id="dateLabel"></div>
   </div>
 
   <div class="toolbar">
