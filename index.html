@@ -377,12 +377,10 @@ try {
 (function(){
   const WEEKDAY_LABELS = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
 
-  function randomCode(){ return Math.random().toString(36).slice(2, 8); }
-  let boardCode = localStorage.getItem('meuDiaBoardCode');
-  if(!boardCode){
-    boardCode = randomCode();
-    try{ localStorage.setItem('meuDiaBoardCode', boardCode); }catch(err){}
-  }
+  // Fixed board code: this is a personal single-user app, so every device
+  // should automatically share the same board with zero setup — no code to
+  // type in anywhere.
+  const boardCode = 'alltoral-meudia';
 
   function dateKey(d){
     const y = d.getFullYear();
