@@ -278,12 +278,16 @@
   }
   .task-item:hover .task-close{ display:block; }
   .add-task-row{
-    padding:8px 12px 12px;
+    padding:8px 8px 12px 12px;
     border-top:1px dashed rgba(20,17,22,0.12);
     flex-shrink:0;
+    display:flex;
+    align-items:center;
+    gap:6px;
   }
   .add-task-input{
-    width:100%;
+    flex:1;
+    min-width:0;
     border:none;
     background:transparent;
     font-family:'Archivo',sans-serif;
@@ -292,6 +296,24 @@
     outline:none;
   }
   .add-task-input::placeholder{ color:#B7B2AC; }
+  .add-task-confirm{
+    flex-shrink:0;
+    width:26px; height:26px;
+    padding:0;
+    border-radius:50%;
+    border:2px solid var(--black);
+    background:var(--pink);
+    border-color:var(--pink);
+    color:var(--white);
+    font-size:15px;
+    font-weight:700;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+  .add-task-confirm:active{ transform:scale(0.92); }
 
   ::-webkit-scrollbar{ width:8px; height:8px; }
   ::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.2); border-radius:4px; }
@@ -513,13 +535,27 @@ try {
       const input = document.createElement('input');
       input.className = 'add-task-input';
       input.placeholder = '+ tarefa';
-      input.addEventListener('keydown', (e)=>{
-        if(e.key === 'Enter' && input.value.trim()){
+      input.setAttribute('enterkeyhint', 'done');
+      input.setAttribute('autocomplete', 'off');
+      function submitInput(){
+        if(input.value.trim()){
           addTask(dk, input.value.trim());
           input.value = '';
         }
+      }
+      input.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          submitInput();
+        }
       });
+      const confirmBtn = document.createElement('button');
+      confirmBtn.className = 'add-task-confirm';
+      confirmBtn.type = 'button';
+      confirmBtn.textContent = '+';
+      confirmBtn.addEventListener('click', submitInput);
       addRow.appendChild(input);
+      addRow.appendChild(confirmBtn);
       card.appendChild(addRow);
 
       weekBoard.appendChild(card);
