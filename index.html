@@ -298,22 +298,21 @@
   .add-task-input::placeholder{ color:#B7B2AC; }
   .add-task-confirm{
     flex-shrink:0;
-    width:26px; height:26px;
+    width:24px; height:24px;
     padding:0;
-    border-radius:50%;
-    border:2px solid var(--black);
-    background:var(--pink);
-    border-color:var(--pink);
-    color:var(--white);
-    font-size:15px;
-    font-weight:700;
-    line-height:1;
+    border-radius:6px;
+    border:none;
+    background:transparent;
+    color:var(--black);
+    opacity:0.35;
     display:flex;
     align-items:center;
     justify-content:center;
     cursor:pointer;
   }
-  .add-task-confirm:active{ transform:scale(0.92); }
+  .add-task-confirm svg{ width:16px; height:16px; }
+  .add-task-confirm:hover{ opacity:0.7; }
+  .add-task-confirm:active{ transform:scale(0.9); }
 
   ::-webkit-scrollbar{ width:8px; height:8px; }
   ::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.2); border-radius:4px; }
@@ -552,7 +551,8 @@ try {
       const confirmBtn = document.createElement('button');
       confirmBtn.className = 'add-task-confirm';
       confirmBtn.type = 'button';
-      confirmBtn.textContent = '+';
+      confirmBtn.setAttribute('aria-label', 'Adicionar tarefa');
+      confirmBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 5v5a3 3 0 0 1-3 3H5m0 0 4-4M5 13l4 4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       confirmBtn.addEventListener('click', submitInput);
       addRow.appendChild(input);
       addRow.appendChild(confirmBtn);
