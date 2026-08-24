@@ -165,6 +165,17 @@
     white-space:nowrap;
   }
   .toolbar-spacer{ flex:1; min-width:8px; }
+  .offline-badge{
+    display:none;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.3px;
+    color:var(--black);
+    background:var(--yellow);
+    padding:5px 10px;
+    border-radius:6px;
+  }
+  .offline-badge.show{ display:inline-block; }
   .btn-sync{ background:transparent; color:var(--white); border:2px solid rgba(255,255,255,0.35); }
   .btn-sync:hover{ border-color:rgba(255,255,255,0.7); }
   .btn-sync[disabled]{ opacity:0.5; cursor:wait; }
@@ -354,6 +365,7 @@
     <span class="week-label" id="weekLabel"></span>
     <button class="btn-nav" id="nextWeekBtn" aria-label="Próxima semana">›</button>
     <button class="btn-today" id="todayBtn">hoje</button>
+    <span class="offline-badge" id="offlineBadge">offline — salvando neste aparelho</span>
     <div class="toolbar-spacer"></div>
     <button class="btn-sync" id="syncBtn">sincronizar com Google Agenda</button>
     <span class="sync-status" id="syncStatus"></span>
@@ -367,7 +379,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { initializeFirestore, persistentLocalCache, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
 // ====== COLE AQUI A CONFIGURAÇÃO DO SEU PROJETO FIREBASE ======
 // Veja o LEIA-ME.md para o passo a passo (gratuito, sem cartão de crédito).
@@ -390,7 +402,7 @@ let db = null;
 try {
   if (firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('COLE_') !== 0) {
     const app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
+    db = initializeFirestore(app, { localCache: persistentLocalCache(/*settings*/{}) });
   }
 } catch (err) {
   console.warn('Firebase não inicializou:', err);
@@ -714,6 +726,22 @@ try {
   });
 
   switchWeek();
+
+  const offlineBadge = document.getElementById('offlineBadge');
+  function updateOnlineStatus(){
+    offlineBadge.classList.toggle('show', !navigator.onLine);
+  }
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  updateOnlineStatus();
+
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('./sw.js').catch((err)=>{
+        console.warn('Service worker não registrou:', err);
+      });
+    });
+  }
 })();
 </script>
 </body>
