@@ -2,7 +2,7 @@
 // Estratégia: tenta a rede primeiro (pra sempre pegar a versão mais nova);
 // se a rede falhar (offline), serve a última cópia salva no cache.
 
-const CACHE_NAME = 'meudia-cache-v3';
+const CACHE_NAME = 'meudia-cache-v4';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
